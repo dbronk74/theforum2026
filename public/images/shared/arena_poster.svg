@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1420"/>
+      <stop offset="1" stop-color="#132133"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <g filter="url(#glow)">
+    <circle cx="950" cy="120" r="80" fill="#00d4ff" opacity=".22"/>
+    <circle cx="260" cy="500" r="120" fill="#ff4fa3" opacity=".18"/>
+  </g>
+  <text x="80" y="160" fill="#00d4ff" font-size="64" font-family="Orbitron" style="letter-spacing:2px">WorldSpeak Arena</text>
+  <text x="80" y="220" fill="#b0bec5" font-size="24" font-family="Inter">A global stage to break echo chambers</text>
+  <rect x="80" y="260" width="1040" height="280" fill="none" stroke="#00d4ff" opacity=".5" rx="24"/>
+  <text x="100" y="320" fill="#b0bec5" font-size="18" font-family="Inter">• AI Moderator • Live Transcript • Voting • Evidence Receipts • Lifelines</text>
+</svg>

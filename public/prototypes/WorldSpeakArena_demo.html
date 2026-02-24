@@ -1,0 +1,1065 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row =>
+                    row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+                );
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var filteredData = jsonData.filter(row =>
+                    row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+                );
+                var csv = XLSX.utils.aoa_to_sheet(filteredData);
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldSpeak Arena</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
+        body {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .arena-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        .header-banner {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, #1b263b, #0d1b2a);
+            border-bottom: 4px solid #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 2;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff;
+            font-size: 3.5rem;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+        .header-subtitle {
+            font-family: 'Roboto', sans-serif;
+            color: #b0bec5;
+            font-size: 1.2rem;
+        }
+        .header-topic {
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-top: 10px;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+        @keyframes neonGlow {
+            from { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+            to { text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff; }
+        }
+        .globe-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+        }
+        .globe {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.2), transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.3);
+            animation: rotateGlobe 20s linear infinite;
+            position: relative;
+        }
+        @keyframes rotateGlobe {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .globe::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        .arena {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1600px;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            margin-top: 20px;
+        }
+        .debater-platform {
+            width: 40%;
+            padding: 20px;
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 10px rgba(0, 212, 255, 0.1);
+            position: relative;
+        }
+        .debater-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .debater-platform h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .debater-2 h2 {
+            color: #ff4081;
+            text-shadow: 0 0 10px #ff4081;
+        }
+        .video-feed {
+            background: #0a0a0a;
+            border: 2px solid #00d4ff;
+            height: 300px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+        .debater-2 .video-feed {
+            border-color: #ff4081;
+            box-shadow: inset 0 0 10px rgba(255, 64, 129, 0.2);
+        }
+        .video-feed p {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        .debater-2 .video-feed p {
+            color: #ff4081;
+            text-shadow: 0 0 5px #ff4081;
+        }
+        .timer-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 3;
+        }
+        .timer-status p {
+            color: #b0bec5;
+            font-size: 0.9em;
+            margin: 0;
+        }
+        .evidence-section {
+            margin-top: 20px;
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+        .debater-2 .evidence-section {
+            border-color: #ff4081;
+            box-shadow: 0 0 10px rgba(255, 64, 129, 0.2);
+        }
+        .evidence-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+            margin-bottom: 10px;
+        }
+        .debater-2 .evidence-section h3 {
+            color: #ff4081;
+            text-shadow: 0 0 5px #ff4081;
+        }
+        .evidence-section textarea {
+            width: 100%;
+            background: #1b263b;
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            font-family: 'Roboto', sans-serif;
+            padding: 10px;
+            border-radius: 5px;
+            resize: none;
+        }
+        .debater-2 .evidence-section textarea {
+            border-color: #ff4081;
+        }
+        .evidence-section .status {
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #ff4081;
+        }
+        .lifeline-section {
+            margin-top: 20px;
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+        .debater-2 .lifeline-section {
+            border-color: #ff4081;
+            box-shadow: 0 0 10px rgba(255, 64, 129, 0.2);
+        }
+        .lifeline-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+            margin-bottom: 10px;
+        }
+        .debater-2 .lifeline-section h3 {
+            color: #ff4081;
+            text-shadow: 0 0 5px #ff4081;
+        }
+        .lifeline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            border: 1px solid #00d4ff;
+        }
+        .debater-2 .lifeline {
+            border-color: #ff4081;
+        }
+        .lifeline span {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            margin-right: 10px;
+            min-width: 100px;
+        }
+        .debater-2 .lifeline span {
+            color: #ff4081;
+        }
+        .lifeline input {
+            flex: 1;
+            background: #1b263b;
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            font-family: 'Roboto', sans-serif;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .debater-2 .lifeline input {
+            border-color: #ff4081;
+        }
+        .lifeline button {
+            background-color: #00d4ff;
+            color: #0a0a0a;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        .debater-2 .lifeline button {
+            background-color: #ff4081;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .status-dot.online {
+            background-color: #00ff00;
+        }
+        .status-dot.offline {
+            background-color: #ff0000;
+        }
+        .ai-moderator-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 15%;
+            position: relative;
+            z-index: 2;
+        }
+        .ai-moderator {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            height: 200px;
+            overflow-y: auto;
+        }
+        .ai-moderator h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .ai-comment {
+            padding: 5px;
+            border-bottom: 1px solid #ffd700;
+            color: #e0e0e0;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .ai-comment.highlighted {
+            background-color: #ffd700;
+            color: #0a0a0a;
+        }
+        .transcript-overlay {
+            margin-top: 20px;
+            width: 100%;
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            height: 400px;
+            overflow-y: auto;
+            color: #e0e0e0;
+        }
+        .transcript-overlay h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+            text-align: center;
+        }
+        .transcript {
+            padding: 5px;
+            border-bottom: 1px solid #00d4ff;
+            position: relative;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .transcript.debater-1 {
+            background-color: rgba(0, 212, 255, 0.1);
+        }
+        .transcript.debater-2 {
+            background-color: rgba(255, 64, 129, 0.1);
+        }
+        .transcript.highlighted {
+            background-color: #ffd700 !important;
+            color: #0a0a0a;
+        }
+        .transcript-actions {
+            display: inline-flex;
+            gap: 5px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        .action-icon.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .icon-key {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1b263b;
+            border-radius: 5px;
+            border: 1px solid #00d4ff;
+            font-size: 0.9em;
+        }
+        .icon-key div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        .rules-section {
+            width: 100%;
+            max-width: 1600px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(145deg, #1b263b, #0d1b2a);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            z-index: 2;
+        }
+        .rules-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .rules-section p {
+            font-family: 'Roboto', sans-serif;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background: #0a0a0a;
+            margin: 15% auto;
+            padding: 20px;
+            border: 2px solid #00d4ff;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            color: #e0e0e0;
+        }
+        .modal-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        .modal-content textarea {
+            background: #1b263b;
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal-content button {
+            background-color: #00d4ff;
+            color: #0a0a0a;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .close {
+            color: #00d4ff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover, .close:focus {
+            color: #ff4081;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .receipt-status {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .receipt-icon {
+            width: 16px;
+            height: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="arena-container">
+        <div class="header-banner">
+            <div class="header-content">
+                <h1 class="header-title">WorldSpeak Arena</h1>
+                <p class="header-subtitle">A Global Stage to Break Echo Chambers</p>
+            </div>
+            <div class="header-topic">Trump Tariffs: Good or Bad and Why</div>
+        </div>
+        <div class="globe-container">
+            <div class="globe"></div>
+        </div>
+        <div class="arena">
+            <!-- Debater 1 Platform -->
+            <div class="debater-platform debater-1">
+                <div class="debater-header">
+                    <h2>Debater 1</h2>
+                </div>
+                <div class="video-feed">
+                    <p>Live Feed</p>
+                    <div class="timer-status">
+                        <p>Timer: <span id="timer1">00:00</span></p>
+                        <p id="status1">Status: Waiting</p>
+                    </div>
+                </div>
+                <div class="evidence-section">
+                    <h3>Viewer Evidence</h3>
+                    <textarea id="evidence1" readonly placeholder="Valid evidence will appear here..."></textarea>
+                    <div id="evidenceStatus1" class="status"></div>
+                </div>
+                <div class="lifeline-section">
+                    <h3>Lifelines (3 Remaining)</h3>
+                    <div id="lifeline1">
+                        <div class="lifeline"><span>Expert 1<span class="status-dot online"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(1, 1)">Call</button></div>
+                        <div class="lifeline"><span>Expert 2<span class="status-dot offline"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(1, 2)">Call</button></div>
+                        <div class="lifeline"><span>Expert 3<span class="status-dot online"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(1, 3)">Call</button></div>
+                    </div>
+                </div>
+            </div>
+            <!-- AI Moderator and Transcript -->
+            <div class="ai-moderator-section">
+                <div class="ai-moderator">
+                    <h3>AI Moderator</h3>
+                    <div id="aiComments"></div>
+                </div>
+                <div class="transcript-overlay">
+                    <h2>Live Transcript</h2>
+                    <div id="transcriptList"></div>
+                    <div class="icon-key">
+                        <div><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#00ff00" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Agree with Statement</div>
+                        <div><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg> Disagree with Statement</div>
+                        <div><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="15" x2="12" y2="15"/></svg> Submit Evidence</div>
+                        <div><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2"><path d="M4 12h6m4 0h6m-6-6v12"/></svg> Challenge AI</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Debater 2 Platform -->
+            <div class="debater-platform debater-2">
+                <div class="debater-header">
+                    <h2>Debater 2</h2>
+                </div>
+                <div class="video-feed">
+                    <p>Live Feed</p>
+                    <div class="timer-status">
+                        <p>Timer: <span id="timer2">00:00</span></p>
+                        <p id="status2">Status: Waiting</p>
+                    </div>
+                </div>
+                <div class="evidence-section">
+                    <h3>Viewer Evidence</h3>
+                    <textarea id="evidence2" readonly placeholder="Valid evidence will appear here..."></textarea>
+                    <div id="evidenceStatus2" class="status"></div>
+                </div>
+                <div class="lifeline-section">
+                    <h3>Lifelines (3 Remaining)</h3>
+                    <div id="lifeline2">
+                        <div class="lifeline"><span>Expert 1<span class="status-dot online"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(2, 1)">Call</button></div>
+                        <div class="lifeline"><span>Expert 2<span class="status-dot online"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(2, 2)">Call</button></div>
+                        <div class="lifeline"><span>Expert 3<span class="status-dot offline"></span></span><input type="text" placeholder="Awaiting assistance..."><button onclick="useLifeline(2, 3)">Call</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Rules Section -->
+        <div class="rules-section">
+            <h3>Debate Rules</h3>
+            <p>THIS FORUM IS AVAILABLE TO HEAR BOTH SIDES OF AN ARGUMENT IN A CIVIL MANNER - any anger, violence, degrading speech, threats, or any non-civil communication will be monitored by AI and, if detected, will result in disqualification and immediate disconnection. Any offenders lose the debate, and results will be posted on the main website cited as inflammatory rhetoric. Please speak in a professional manner at all times. The AI moderator will always be calculating with an unbiased framework, and IF by chance there is any information viewers or debaters feel is incorrect, then you can upload fact-based evidence for instant review and confirmation by the AI moderator and receive approval or denial (with an explanation), and the validated evidence will appear for all to review. You may call upon 3 experts that you feel can assist in your debate (they too will be subject to AI fact confirmations). Within the live transcript, there will be a receipt icon available to ALL viewers to upload relevant fact-based information regarding a specific comment (which also will be reviewed and confirmed by AI before appearing in the "valid evidence" section).</p>
+        </div>
+    </div>
+
+    <!-- Receipt Submission Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h2>Submit Evidence</h2>
+            <p>Provide evidence to support or challenge the statement. You have <span id="receiptTimer">5:00</span> to submit.</p>
+            <textarea id="receiptInput" placeholder="Enter evidence (e.g., URL, text, or document reference)..."></textarea>
+            <button id="submitReceipt">Submit</button>
+        </div>
+    </div>
+
+    <!-- Viewer Evidence Correction Modal -->
+    <div id="viewerEvidenceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeViewerModal()">×</span>
+            <h2>Correct Your Submission</h2>
+            <p id="viewerEvidenceMessage"></p>
+            <textarea id="viewerEvidenceInput" placeholder="Revise your evidence..."></textarea>
+            <button id="submitViewerEvidence">Resubmit</button>
+        </div>
+    </div>
+
+    <script>
+        // Simulated AI functions
+        function simulateSpeechAnalysis(debater, text) {
+            const angerKeywords = ["idiot", "stupid", "hate", "shut up"];
+            const vulgarKeywords = ["fuck", "shit", "bitch", "asshole"];
+            const isAngry = angerKeywords.some(keyword => text.toLowerCase().includes(keyword));
+            const isVulgar = vulgarKeywords.some(keyword => text.toLowerCase().includes(keyword));
+            return { text, isAngry, isVulgar };
+        }
+
+        function simulateFactCheck(statement) {
+            if (statement.includes("90% of U.S. manufacturing jobs")) {
+                return { isFactual: false, result: "Questionable - Evidence Required (U.S. Bureau of Labor Statistics data shows manufacturing job losses are more complex, with automation playing a significant role)." };
+            } else if (statement.includes("U.S. trade deficit with China was eliminated")) {
+                return { isFactual: false, result: "Questionable - Evidence Required (U.S. Census Bureau data shows the trade deficit with China decreased but was not eliminated, standing at $279 billion in 2020)." };
+            } else if (statement.includes("tariffs caused a 25% increase in consumer prices")) {
+                return { isFactual: false, result: "Questionable - Evidence Required (Studies like those from the Federal Reserve estimate a more modest impact, around 0.4% to 1% increase in consumer prices)." };
+            }
+            return { isFactual: true, result: "Verified" };
+        }
+
+        function simulateEvidenceAnalysis(evidence) {
+            const isValid = evidence.includes("http") || evidence.includes("www") || evidence.includes("study");
+            return { isValid, message: isValid ? "Evidence Accepted" : "Invalid evidence: Please provide a credible source or factual data." };
+        }
+
+        function simulateReceiptVerification(receipt, isLate) {
+            const isHighLevel = receipt.includes("http") || receipt.includes("www") || receipt.includes("study");
+            let status = isHighLevel ? "Verified" : "Rejected - Insufficient Evidence";
+            if (isLate && isHighLevel) {
+                const introducesNewAspect = Math.random() > 0.5;
+                status = introducesNewAspect ? "Late - New Aspect Included" : "Late - No New Aspect, Rejected";
+            }
+            return { status, isHighLevel };
+        }
+
+        // AI Moderator Comments
+        let aiCommentId = 0;
+        let transcriptToCommentMap = {};
+        let commentToTranscriptMap = {};
+
+        function addAIComment(comment, relatedTranscriptId) {
+            aiCommentId++;
+            transcriptToCommentMap[relatedTranscriptId] = aiCommentId;
+            commentToTranscriptMap[aiCommentId] = relatedTranscriptId;
+            const aiComments = document.getElementById('aiComments');
+            aiComments.innerHTML += `<div class="ai-comment" id="ai-comment-${aiCommentId}" onclick="highlightRelated(${relatedTranscriptId}, ${aiCommentId})">${comment}</div>`;
+            aiComments.scrollTop = aiComments.scrollHeight;
+        }
+
+        // Real-Time Transcription and Receipt Handling
+        let transcriptId = 0;
+        let receiptTimeouts = {};
+        let receiptTimers = {};
+        let lifelineCounts = { 1: 3, 2: 3 };
+        let voteStates = {};
+
+        function addTranscript(debater, text) {
+            transcriptId++;
+            voteStates[transcriptId] = { agreed: false, disagreed: false };
+            const transcriptList = document.getElementById('transcriptList');
+            const speechAnalysis = simulateSpeechAnalysis(debater, text);
+            const factCheckResult = simulateFactCheck(text);
+            const debaterClass = debater === 'Debater 1' ? 'debater-1' : 'debater-2';
+            let warning = '';
+            if (speechAnalysis.isAngry || speechAnalysis.isVulgar) {
+                warning = '<span style="color: #ff4081;">Warning: Inappropriate tone detected</span>';
+                addAIComment(`Warning: ${debater} used inappropriate tone: "${speechAnalysis.text}". Turn forfeited.`, transcriptId);
+            } else {
+                addAIComment(`${debater}: ${speechAnalysis.text} - Fact-Check: ${factCheckResult.result}`, transcriptId);
+            }
+            transcriptList.innerHTML += `
+                <div class="transcript ${debaterClass}" id="transcript-${transcriptId}" onclick="highlightRelated(${transcriptId}, ${transcriptToCommentMap[transcriptId]})">
+                    <p>
+                        <span class="transcript-actions">
+                            <svg class="action-icon" id="agree-${transcriptId}" onclick="handleVote(${transcriptId}, 'agree')" viewBox="0 0 24 24" fill="none" stroke="#00ff00" stroke-width="2">
+                                <path d="M5 12l5 5L20 7"/>
+                            </svg>
+                            <svg class="action-icon" id="disagree-${transcriptId}" onclick="handleVote(${transcriptId}, 'disagree')" viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="2">
+                                <path d="M6 6l12 12M6 18L18 6"/>
+                            </svg>
+                            <svg class="action-icon receipt-icon" onclick="requestReceipt(${transcriptId}, '${debater}')" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2">
+                                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                <line x1="8" y1="9" x2="16" y2="9"/>
+                                <line x1="8" y1="12" x2="16" y2="12"/>
+                                <line x1="8" y1="15" x2="12" y2="15"/>
+                            </svg>
+                            <svg class="action-icon" onclick="requestAssistance(${transcriptId}, '${debater}')" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2">
+                                <path d="M4 12h6m4 0h6m-6-6v12"/>
+                            </svg>
+                        </span>
+                        <strong>${debater}:</strong> ${speechAnalysis.text}
+                    </p>
+                    <p><strong>AI Fact-Check:</strong> ${factCheckResult.result}</p>
+                    <p>${warning}</p>
+                    <div id="receiptStatus-${transcriptId}" class="receipt-status"></div>
+                </div>`;
+            transcriptList.scrollTop = transcriptList.scrollHeight;
+            return speechAnalysis;
+        }
+
+        function highlightRelated(transcriptId, commentId) {
+            // Remove previous highlights
+            document.querySelectorAll('.transcript.highlighted').forEach(el => el.classList.remove('highlighted'));
+            document.querySelectorAll('.ai-comment.highlighted').forEach(el => el.classList.remove('highlighted'));
+
+            // Highlight the clicked elements
+            const transcriptElement = document.getElementById(`transcript-${transcriptId}`);
+            const commentElement = document.getElementById(`ai-comment-${commentId}`);
+            if (transcriptElement) {
+                transcriptElement.classList.add('highlighted');
+                transcriptElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            if (commentElement) {
+                commentElement.classList.add('highlighted');
+                commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Voting Handler
+        function handleVote(transcriptId, action) {
+            const state = voteStates[transcriptId];
+            const agreeIcon = document.getElementById(`agree-${transcriptId}`);
+            const disagreeIcon = document.getElementById(`disagree-${transcriptId}`);
+            const transcriptElement = document.getElementById(`transcript-${transcriptId}`);
+
+            if (action === 'agree') {
+                if (state.agreed) return;
+                if (state.disagreed) {
+                    state.disagreed = false;
+                    disagreeIcon.classList.remove('disabled');
+                    transcriptElement.style.backgroundColor = '';
+                }
+                transcriptElement.style.backgroundColor = '#1a3c34';
+                state.agreed = true;
+                agreeIcon.classList.add('disabled');
+                addAIComment(`Viewer agreed with statement (ID: ${transcriptId}).`, transcriptId);
+            } else if (action === 'disagree') {
+                if (state.disagreed) return;
+                if (state.agreed) {
+                    state.agreed = false;
+                    agreeIcon.classList.remove('disabled');
+                    transcriptElement.style.backgroundColor = '';
+                }
+                transcriptElement.style.backgroundColor = '#4b1c19';
+                state.disagreed = true;
+                disagreeIcon.classList.add('disabled');
+                addAIComment(`Viewer disagreed with statement (ID: ${transcriptId}).`, transcriptId);
+            }
+        }
+
+        // Receipt Submission Modal Handling
+        let currentTranscriptId = null;
+        let currentDebater = null;
+        const modal = document.getElementById('receiptModal');
+        const receiptInput = document.getElementById('receiptInput');
+        const submitReceiptBtn = document.getElementById('submitReceipt');
+        const receiptTimerDisplay = document.getElementById('receiptTimer');
+
+        function requestReceipt(transcriptId, debater) {
+            currentTranscriptId = transcriptId;
+            currentDebater = debater;
+            modal.style.display = 'block';
+            receiptInput.value = '';
+            
+            let timeLeft = 300;
+            receiptTimers[transcriptId] = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                receiptTimerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 0) {
+                    clearInterval(receiptTimers[transcriptId]);
+                    receiptTimerDisplay.textContent = 'Time Up';
+                }
+            }, 1000);
+
+            receiptTimeouts[transcriptId] = setTimeout(() => {
+                receiptTimerDisplay.textContent = 'Submissions Now Late';
+            }, 300000);
+        }
+
+        function requestAssistance(transcriptId, debater) {
+            currentTranscriptId = transcriptId;
+            currentDebater = debater;
+            modal.style.display = 'block';
+            receiptInput.value = '';
+            
+            let timeLeft = 300;
+            receiptTimers[transcriptId] = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                receiptTimerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 0) {
+                    clearInterval(receiptTimers[transcriptId]);
+                    receiptTimerDisplay.textContent = 'Time Up';
+                }
+            }, 1000);
+
+            receiptTimeouts[transcriptId] = setTimeout(() => {
+                receiptTimerDisplay.textContent = 'Submissions Now Late';
+            }, 300000);
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            if (receiptTimers[currentTranscriptId]) {
+                clearInterval(receiptTimers[currentTranscriptId]);
+            }
+        }
+
+        submitReceiptBtn.addEventListener('click', () => {
+            const receiptText = receiptInput.value.trim();
+            if (receiptText) {
+                const isLate = receiptTimerDisplay.textContent === 'Submissions Now Late' || receiptTimerDisplay.textContent === 'Time Up';
+                const verification = simulateReceiptVerification(receiptText, isLate);
+                const receiptStatusElement = document.getElementById(`receiptStatus-${currentTranscriptId}`);
+                receiptStatusElement.innerHTML = `<p><strong>Evidence:</strong> ${receiptText}</p>
+                                                 <p><strong>AI Review:</strong> ${verification.status}</p>`;
+                addAIComment(`Evidence Review for ${currentDebater}: ${verification.status}`, currentTranscriptId);
+                let evidenceFieldId = currentDebater === 'Debater 1' ? 'evidence1' : 'evidence2';
+                if (verification.status === "Verified" || verification.status === "Late - New Aspect Included") {
+                    document.getElementById(evidenceFieldId).value = receiptText;
+                }
+                closeModal();
+            }
+        });
+
+        // Viewer Evidence Correction Modal Handling
+        let currentViewerEvidence = null;
+        let currentDebaterForEvidence = null;
+        const viewerModal = document.getElementById('viewerEvidenceModal');
+        const viewerEvidenceInput = document.getElementById('viewerEvidenceInput');
+        const viewerEvidenceMessage = document.getElementById('viewerEvidenceMessage');
+        const submitViewerEvidenceBtn = document.getElementById('submitViewerEvidence');
+
+        function requestEvidenceCorrection(evidence, debater) {
+            currentViewerEvidence = evidence;
+            currentDebaterForEvidence = debater;
+            viewerModal.style.display = 'block';
+            viewerEvidenceInput.value = evidence;
+            viewerEvidenceMessage.textContent = "Your submission was deemed invalid. Please revise to include credible sources or factual data.";
+        }
+
+        function closeViewerModal() {
+            viewerModal.style.display = 'none';
+        }
+
+        submitViewerEvidenceBtn.addEventListener('click', () => {
+            const revisedEvidence = viewerEvidenceInput.value.trim();
+            if (revisedEvidence) {
+                const analysis = simulateEvidenceAnalysis(revisedEvidence);
+                const evidenceStatusId = currentDebaterForEvidence === 'Debater 1' ? 'evidenceStatus1' : 'evidenceStatus2';
+                const evidenceFieldId = currentDebaterForEvidence === 'Debater 1' ? 'evidence1' : 'evidence2';
+                document.getElementById(evidenceStatusId).textContent = analysis.message;
+                addAIComment(`Viewer Evidence for ${currentDebaterForEvidence}: ${analysis.message}`, currentTranscriptId);
+                if (analysis.isValid) {
+                    document.getElementById(evidenceFieldId).value = revisedEvidence;
+                } else {
+                    requestEvidenceCorrection(revisedEvidence, currentDebaterForEvidence);
+                }
+                closeViewerModal();
+            }
+        });
+
+        // Lifeline Handling
+        function useLifeline(debaterNum, lifelineNum) {
+            if (lifelineCounts[debaterNum] <= 0) {
+                alert(`Debater ${debaterNum} has no lifelines remaining!`);
+                return;
+            }
+            const lifelineSection = document.getElementById(`lifeline${debaterNum}`);
+            const lifeline = lifelineSection.children[lifelineNum - 1];
+            const statusDot = lifeline.querySelector('.status-dot');
+            if (statusDot.classList.contains('offline')) {
+                alert(`Expert ${lifelineNum} is currently offline and cannot be called.`);
+                return;
+            }
+            lifelineCounts[debaterNum]--;
+            lifelineSection.querySelector('h3').textContent = `Lifelines (${lifelineCounts[debaterNum]} Remaining)`;
+            const input = lifeline.querySelector('input');
+            input.value = `Expert ${lifelineNum} has provided assistance for Debater ${debaterNum}.`;
+            lifeline.querySelector('button').disabled = true;
+            addAIComment(`Debater ${debaterNum} used a lifeline: Expert ${lifelineNum} assistance received.`, transcriptId);
+        }
+
+        // Timer Functionality
+        let timer1Interval, timer2Interval;
+        let time1 = 0, time2 = 0;
+
+        function formatTime(seconds) {
+            let mins = Math.floor(seconds / 60);
+            let secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer(debater, timerId, intervalVar, maxTime = 120) {
+            return function() {
+                /* viewer gate removed for demo */
+                if (window[intervalVar]) clearInterval(window[intervalVar]);
+                currentDebaterSpeaking = debater;
+                document.getElementById(debater === 'Debater 1' ? 'status1' : 'status2').textContent = 'Status: Speaking';
+                window[intervalVar] = setInterval(() => {
+                    window[timerId]++;
+                    document.getElementById(timerId).textContent = formatTime(window[timerId]);
+                    if (window[timerId] >= maxTime) {
+                        clearInterval(window[intervalVar]);
+                        alert(`${debater}'s time is up! The floor yields to the opponent.`);
+                        addAIComment(`${debater}'s time is up. Floor yields to opponent.`, transcriptId);
+                        currentDebaterSpeaking = debater === 'Debater 1' ? 'Debater 2' : 'Debater 1';
+                        document.getElementById(debater === 'Debater 1' ? 'status1' : 'status2').textContent = 'Status: Time Up';
+                        startTimer(currentDebaterSpeaking, currentDebaterSpeaking === 'Debater 1' ? 'time1' : 'time2', currentDebaterSpeaking === 'Debater 1' ? 'timer1Interval' : 'timer2Interval')();
+                    }
+                }, 1000);
+            };
+        }
+
+        function stopTimer(intervalVar) {
+            return function() {
+                if (window[intervalVar]) {
+                    clearInterval(window[intervalVar]);
+                }
+            };
+        }
+
+        // Viewer Count Simulation
+        let viewers = 500;
+
+        function updateViewerCount() {
+            viewers += Math.floor(Math.random() * 5) - 2;
+            viewers = Math.max(50, viewers);
+        }
+        setInterval(updateViewerCount, 10000);
+
+        // Test Run Simulation
+        let currentDebaterSpeaking = null;
+        const debateStatements = [
+            { debater: 'Debater 1', text: "Trump's tariffs protected American jobs by reducing imports and boosting domestic production." },
+            { debater: 'Debater 2', text: "Tariffs caused a 25% increase in consumer prices, hurting the average American family." },
+            { debater: 'Debater 1', text: "The U.S. trade deficit with China was eliminated thanks to these tariffs." },
+            { debater: 'Debater 2', text: "Tariffs led to retaliatory measures from China, which hurt U.S. farmers and exporters." },
+            { debater: 'Debater 1', text: "Tariffs brought back 90% of U.S. manufacturing jobs that were lost to globalization." },
+            { debater: 'Debater 2', text: "Studies show that tariffs disrupted global supply chains, leading to inefficiencies and higher costs for businesses." }
+        ];
+
+        const viewerEvidence = [
+            { transcriptId: 1, debater: 'Debater 1', evidence: "https://www.econlib.org/protectionism - Tariffs can protect domestic industries in the short term." },
+            { transcriptId: 2, debater: 'Debater 2', evidence: "https://www.federalreserve.gov/study - Impact of tariffs on consumer prices was around 1%." },
+            { transcriptId: 4, debater: 'Debater 2', evidence: "https://www.usda.gov/report - U.S. agricultural exports to China dropped by 20% after tariffs." }
+        ];
+
+        const viewerVotes = [
+            { transcriptId: 1, action: 'agree' },
+            { transcriptId: 2, action: 'disagree' },
+            { transcriptId: 3, action: 'disagree' },
+            { transcriptId: 4, action: 'agree' },
+            { transcriptId: 5, action: 'disagree' },
+            { transcriptId: 6, action: 'agree' }
+        ];
+
+        async function runDebateSimulation() {
+            currentDebaterSpeaking = 'Debater 1';
+            startTimer('Debater 1', 'time1', 'timer1Interval')();
+
+            for (let i = 0; i < debateStatements.length; i++) {
+                const statement = debateStatements[i];
+                const speechAnalysis = addTranscript(statement.debater, statement.text);
+                
+                if (speechAnalysis.isAngry || speechAnalysis.isVulgar) {
+                    stopTimer(statement.debater === 'Debater 1' ? 'timer1Interval' : 'timer2Interval')();
+                    currentDebaterSpeaking = statement.debater === 'Debater 1' ? 'Debater 2' : 'Debater 1';
+                    document.getElementById(statement.debater === 'Debater 1' ? 'status1' : 'status2').textContent = 'Status: Forfeited (Inappropriate Tone)';
+                    startTimer(currentDebaterSpeaking, currentDebaterSpeaking === 'Debater 1' ? 'time1' : 'time2', currentDebaterSpeaking === 'Debater 1' ? 'timer1Interval' : 'timer2Interval')();
+                } else {
+                    // Simulate viewer voting
+                    const vote = viewerVotes.find(v => v.transcriptId === i + 1);
+                    if (vote) {
+                        setTimeout(() => {
+                            handleVote(i + 1, vote.action);
+                        }, 1000);
+                    }
+
+                    // Simulate viewer evidence submission
+                    const evidence = viewerEvidence.find(e => e.transcriptId === i + 1);
+                    if (evidence) {
+                        setTimeout(() => {
+                            const verification = simulateReceiptVerification(evidence.evidence, false);
+                            const receiptStatusElement = document.getElementById(`receiptStatus-${i + 1}`);
+                            receiptStatusElement.innerHTML = `<p><strong>Evidence:</strong> ${evidence.evidence}</p>
+                                                             <p><strong>AI Review:</strong> ${verification.status}</p>`;
+                            addAIComment(`Evidence Review for ${evidence.debater}: ${verification.status}`, i + 1);
+                            let evidenceFieldId = evidence.debater === 'Debater 1' ? 'evidence1' : 'evidence2';
+                            if (verification.status === "Verified") {
+                                document.getElementById(evidenceFieldId).value = evidence.evidence;
+                            }
+                        }, 1500);
+                    }
+
+                    // Switch debater
+                    if (i < debateStatements.length - 1) {
+                        stopTimer(statement.debater === 'Debater 1' ? 'timer1Interval' : 'timer2Interval')();
+                        currentDebaterSpeaking = statement.debater === 'Debater 1' ? 'Debater 2' : 'Debater 1';
+                        startTimer(currentDebaterSpeaking, currentDebaterSpeaking === 'Debater 1' ? 'time1' : 'time2', currentDebaterSpeaking === 'Debater 1' ? 'timer1Interval' : 'timer2Interval')();
+                    }
+                }
+                await new Promise(resolve => setTimeout(resolve, 3000));
+            }
+        }
+
+        // Start the simulation
+        runDebateSimulation();
+    </script>
+</body>
+</html>

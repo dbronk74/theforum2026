@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --forum-neon:#00d4ff; }
+
+body {
+  @apply bg-starfield;
+  background-attachment: fixed;
+}
+
+.page { @apply max-w-6xl mx-auto px-4 md:px-6; }
+
+.neon-text {
+  text-shadow: 0 0 10px var(--forum-neon), 0 0 20px var(--forum-neon);
+}
+.glass { @apply bg-black/35 backdrop-blur border border-white/10 rounded-3xl shadow-xl; }
