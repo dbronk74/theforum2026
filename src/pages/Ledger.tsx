@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Card, CardBody, CardHeader } from '@/ui/Card'
 import Button from '@/ui/Button'
 import { useForum } from '@/state/forumState'
+import { assetPath } from '@/utils/assetPath'
 
 type Filter = 'all' | 'challenger_win' | 'opponent_win' | 'draw' | 'declined' | 'no_show'
 type IntroPhase = 'intro' | 'flash' | 'live'
@@ -35,7 +36,7 @@ export default function Ledger() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/ledger-intro.mp4"
+              src={assetPath('videos/ledger-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted

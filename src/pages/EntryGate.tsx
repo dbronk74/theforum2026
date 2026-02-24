@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '@/ui/Button'
+import { assetPath } from '@/utils/assetPath'
 
 type Phase = 'oath' | 'portal' | 'flash'
 type Briefing = 'idle' | 'speaking' | 'done'
@@ -90,7 +91,7 @@ export default function EntryGate() {
     return (
       <div className="relative min-h-screen overflow-hidden bg-black">
         <video
-          src="/videos/sentinel_gate.mp4"
+          src={assetPath('videos/sentinel_gate.mp4')}
           className="h-screen w-screen object-cover"
           autoPlay
           controls={false}
@@ -113,7 +114,7 @@ export default function EntryGate() {
     <div className="relative min-h-screen overflow-hidden bg-forum-bg">
       <audio
         ref={narrationAudioRef}
-        src="/audio/ForumEnter.mp3"
+        src={assetPath('audio/ForumEnter.mp3')}
         preload="auto"
         onPlay={() => setBriefing('speaking')}
         onEnded={() => setBriefing('done')}
@@ -194,4 +195,3 @@ export default function EntryGate() {
     </div>
   )
 }
-

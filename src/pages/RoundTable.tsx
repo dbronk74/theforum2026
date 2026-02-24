@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Card, CardBody, CardFooter, CardHeader } from '@/ui/Card'
 import Button from '@/ui/Button'
 import { useForum, type Side } from '@/state/forumState'
+import { assetPath } from '@/utils/assetPath'
 
 type TableRoom = {
   id: string
@@ -211,7 +212,7 @@ export default function RoundTable() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/round-table-intro.mp4"
+              src={assetPath('videos/round-table-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Button from '@/ui/Button'
 import { Card, CardBody, CardFooter, CardHeader } from '@/ui/Card'
 import { useRealm } from '@/store/realmState'
+import { assetPath } from '@/utils/assetPath'
 
 const TONES = ['Stoic', 'Mystical', 'Modern Therapist', 'Strategist'] as const
 type Tone = (typeof TONES)[number]
@@ -59,7 +60,7 @@ export default function Oracle() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/oracle-intro.mp4"
+              src={assetPath('videos/oracle-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted

@@ -3,6 +3,7 @@ import Button from '@/ui/Button'
 import Badge from '@/ui/Badge'
 import FeatureCard from '@/components/FeatureCard'
 import { useNavigate } from 'react-router-dom'
+import { assetPath } from '@/utils/assetPath'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export default function Home() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, scale: .95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .6, delay: .1 }} className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-          <img src="/images/shared/arena_poster.svg" alt="Arena Poster" className="w-full h-full object-cover" />
+          <img src={assetPath('images/shared/arena_poster.svg')} alt="Arena Poster" className="w-full h-full object-cover" />
         </motion.div>
       </div>
 

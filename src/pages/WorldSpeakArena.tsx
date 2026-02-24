@@ -5,6 +5,7 @@ import Button from '@/ui/Button'
 import { getTotalScore, useForum, type EvidenceTier, type Outcome, type Side } from '@/state/forumState'
 import { TRIAL_MODULES, selectReasoningProfile } from '@/store/reasoningSlice'
 import { useRealm } from '@/store/realmState'
+import { assetPath } from '@/utils/assetPath'
 
 function msToClock(ms: number): string {
   const total = Math.max(0, Math.floor(ms / 1000))
@@ -167,12 +168,12 @@ export default function WorldSpeakArena() {
   if (introPhase !== 'live') {
     return (
       <div className="fixed inset-0 z-[80] overflow-hidden bg-black">
-        <audio ref={introAudioRef} src="/audio/arena_croud_chant.mp3" preload="auto" />
+        <audio ref={introAudioRef} src={assetPath('audio/arena_croud_chant.mp3')} preload="auto" />
         {introPhase === 'intro' ? (
           <>
             <video
               ref={introVideoRef}
-              src="/videos/arena-intro.mp4"
+              src={assetPath('videos/arena-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted
@@ -729,7 +730,7 @@ export default function WorldSpeakArena() {
       <details className="glass p-4">
         <summary className="cursor-pointer text-sm text-gray-200">Legacy Arena Simulation (for visual reference)</summary>
         <div className="mt-3 rounded-2xl overflow-hidden border border-white/10">
-          <iframe title="Legacy WorldSpeak Arena Prototype" src="/prototypes/WorldSpeakArena_demo.html" className="w-full h-[68vh]" />
+          <iframe title="Legacy WorldSpeak Arena Prototype" src={assetPath('prototypes/WorldSpeakArena_demo.html')} className="w-full h-[68vh]" />
         </div>
       </details>
     </div>

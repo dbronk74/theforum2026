@@ -5,6 +5,7 @@ import { Card, CardBody, CardFooter, CardHeader } from '@/ui/Card'
 import { getFilteredChronoEdges, getFilteredChronoNodes, getSelectedChronoNode } from '@/store/chronoMapSlice'
 import { useRealm } from '@/store/realmState'
 import type { ChronoNode } from '@/types/domain'
+import { assetPath } from '@/utils/assetPath'
 
 type IntroPhase = 'intro' | 'flash' | 'live'
 
@@ -63,7 +64,7 @@ export default function ChronoMap() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/chronomap-intro.mp4"
+              src={assetPath('videos/chronomap-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted

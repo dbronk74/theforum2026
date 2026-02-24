@@ -3,6 +3,7 @@ import { Card, CardBody, CardFooter, CardHeader } from '@/ui/Card'
 import Button from '@/ui/Button'
 import { useForum } from '@/state/forumState'
 import { useRealm } from '@/store/realmState'
+import { assetPath } from '@/utils/assetPath'
 
 type Entry = { id: number; type: 'Ad' | 'Bet' | 'Tip' | 'Archive'; amount: number; note?: string }
 type IntroPhase = 'intro' | 'flash' | 'live'
@@ -61,7 +62,7 @@ export default function Vault() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/vault-intro.mp4"
+              src={assetPath('videos/vault-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted

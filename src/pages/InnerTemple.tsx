@@ -3,6 +3,7 @@ import { Card, CardBody, CardFooter, CardHeader } from '@/ui/Card'
 import Button from '@/ui/Button'
 import { useRealm } from '@/store/realmState'
 import type { TempleOrb } from '@/store/templeSlice'
+import { assetPath } from '@/utils/assetPath'
 
 type Phase = 'gate' | 'intro' | 'temple'
 
@@ -113,7 +114,7 @@ export default function InnerTemple() {
           <CardBody>
             <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/30">
               <video
-                src="/videos/inner-temple-intro.mp4"
+                src={assetPath('videos/inner-temple-intro.mp4')}
                 className="w-full h-[56vh] object-cover"
                 autoPlay
                 muted

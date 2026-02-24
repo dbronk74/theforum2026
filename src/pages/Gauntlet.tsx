@@ -5,6 +5,7 @@ import Button from '@/ui/Button'
 import { getTotalScore, useForum, type Challenge } from '@/state/forumState'
 import { TRIAL_MODULES, selectReasoningProfile } from '@/store/reasoningSlice'
 import { useRealm } from '@/store/realmState'
+import { assetPath } from '@/utils/assetPath'
 
 type ContractForm = {
   challenger: string
@@ -148,7 +149,7 @@ export default function Gauntlet() {
         {introPhase === 'intro' ? (
           <>
             <video
-              src="/videos/gauntlet-intro.mp4"
+              src={assetPath('videos/gauntlet-intro.mp4')}
               className="h-screen w-screen object-cover"
               autoPlay
               muted
