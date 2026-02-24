@@ -19,6 +19,9 @@ import About from './pages/About'
 import { ForumProvider } from './state/forumState'
 import { RealmProvider } from './store/realmState'
 
+const baseUrl = import.meta.env.BASE_URL
+const basename = baseUrl === '/' ? '/' : baseUrl.replace(/\/$/, '')
+
 const router = createBrowserRouter([
   { path:'/', element:<App />, children:[
     { index:true, element:<EntryGate /> },
@@ -35,7 +38,7 @@ const router = createBrowserRouter([
     { path:'vault', element:<Vault /> },
     { path:'about', element:<About /> },
   ]}
-])
+], { basename })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
